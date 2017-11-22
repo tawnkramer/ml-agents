@@ -72,9 +72,9 @@ class Trainer(object):
         self.stats['value_estimate'].append(value)
         self.stats['entropy'].append(ent)
         self.stats['learning_rate'].append(learn_rate)
-        new_info = env.step(actions, value={brain_name: value})[brain_name]
-        self.add_experiences(info, new_info, epsi, actions, a_dist, value)
-        return new_info
+        # new_info = env.step(actions, value={brain_name: value})[brain_name]
+        # self.add_experiences(info, new_info, epsi, actions, a_dist, value)
+        return (epsi, actions, a_dist, value)
 
     def add_experiences(self, info, next_info, epsi, actions, a_dist, value):
         """
@@ -185,7 +185,7 @@ class Trainer(object):
         self.stats['policy_loss'].append(total_p)
         self.training_buffer = vectorize_history(empty_local_history({}))
 
-    def write_summary(self, summary_writer, steps, lesson_number):
+    def write_summary(self, summary_writer, brain, steps, lesson_number):
         """
         Saves training statistics to Tensorboard.
         :param summary_writer: writer associated with Tensorflow session.
@@ -193,8 +193,8 @@ class Trainer(object):
         """
         if len(self.stats['cumulative_reward']) > 0:
             mean_reward = np.mean(self.stats['cumulative_reward'])
-            print("Step: {0}. Mean Reward: {1}. Std of Reward: {2}."
-                  .format(steps, mean_reward, np.std(self.stats['cumulative_reward'])))
+            print("Brain : {0}. Step: {1}. Mean Reward: {2}. Std of Reward: {3}."
+                  .format(brain, steps, mean_reward, np.std(self.stats['cumulative_reward'])))
         summary = tf.Summary()
         for key in self.stats:
             if len(self.stats[key]) > 0:

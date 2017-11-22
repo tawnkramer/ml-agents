@@ -5,7 +5,7 @@ from tensorflow.python.tools import freeze_graph
 from unityagents import UnityEnvironmentException
 
 
-def create_agent_model(env, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_step=5e6):
+def create_agent_model(brain, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_step=5e6):
     """
     Takes a Unity environment and model-specific hyper-parameters and returns the
     appropriate PPO agent model for the environment.
@@ -17,8 +17,8 @@ def create_agent_model(env, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_ste
     :return: a sub-class of PPOAgent tailored to the environment.
     :param max_step: Total number of training steps.
     """
-    brain_name = env.brain_names[0]
-    brain = env.brains[brain_name]
+    # brain_name = env.brain_names[0]
+    # brain = env.brains[brain_name]
     if brain.action_space_type == "continuous":
         return ContinuousControlModel(lr, brain, h_size, epsilon, max_step)
     if brain.action_space_type == "discrete":
