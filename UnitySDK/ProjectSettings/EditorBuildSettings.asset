@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ML-Agents/Examples/DonkeyAVC/Scenes/AVC.unity
+    guid: b362fdcb28a444fa5b719f21d5115c5a
+  m_configObjects: {}
