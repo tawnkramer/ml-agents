@@ -2695,17 +2695,18 @@ MonoBehaviour:
   m_Name: (Clone)(Clone)
   m_EditorClassIdentifier: 
   broadcast: 1
-  graphModel: {fileID: 0}
+  graphModel: {fileID: 4900000, guid: f330af2110cf3496f9d129d2f41945ac, type: 3}
   graphScope: 
   graphPlaceholders: []
   BatchSizePlaceholderName: batch_size
   VectorObservationPlacholderName: vector_observation
   RecurrentInPlaceholderName: recurrent_in
   RecurrentOutPlaceholderName: recurrent_out
-  VisualObservationPlaceholderName: []
+  VisualObservationPlaceholderName:
+  - visual_observation_0
   ActionPlaceholderName: action
   PreviousActionPlaceholderName: prev_action
-  brain: {fileID: 0}
+  brain: {fileID: 767298140}
 --- !u!1 &55973816
 GameObject:
   m_ObjectHideFlags: 0
@@ -29514,7 +29515,7 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  brainType: 2
+  brainType: 3
   CoreBrains:
   - {fileID: 1774365620}
   - {fileID: 1681336009}
