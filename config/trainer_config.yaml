@@ -268,3 +268,17 @@ StudentRecurrentBrain:
     use_recurrent: true
     sequence_length: 32
     buffer_size: 128
+
+AVCBrain:
+    use_curiosity: true
+    curiosity_strength: 0.01
+    curiosity_enc_size: 256
+    time_horizon: 128
+    batch_size: 64
+    buffer_size: 2024
+    hidden_units: 256
+    num_layers: 2
+    beta: 1.0e-2
+    max_steps: 5.0e5
+    num_epoch: 3
+

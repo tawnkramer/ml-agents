@@ -65,7 +65,9 @@ public class Car : MonoBehaviour, ICar {
 
 	public void RestorePosRot()
 	{
-		Set(startPos, startRot);
+		float randTheta = Random.Range(-90f, 90.0f);
+		Quaternion offsetRot = Quaternion.Euler(0.0f, randTheta, 0.0f);
+		Set(startPos, startRot * offsetRot);
 	}
 
 	public void RequestThrottle(float val)

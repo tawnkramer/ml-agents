@@ -8,6 +8,8 @@ public class AVCAgent : Agent
     public GameObject carObj;
     public ICar car;
 
+    float steering_scale = 16.0f;
+
     public override void InitializeAgent()
     {
         base.InitializeAgent();
@@ -21,7 +23,7 @@ public class AVCAgent : Agent
 
     public override void AgentAction(float[] vectorAction, string textAction)
     {
-        float steering = vectorAction[0];
+        float steering = vectorAction[0] * steering_scale;
         float throttle = vectorAction[1];
         car.RequestSteering(steering);
         car.RequestThrottle(throttle);
