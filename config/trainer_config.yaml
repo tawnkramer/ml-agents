@@ -165,6 +165,18 @@ WalkerBrain:
     num_layers: 3
     hidden_units: 512
 
+TWalkerBrain:
+    normalize: true
+    num_epoch: 3
+    time_horizon: 1000
+    batch_size: 2048
+    buffer_size: 20480
+    gamma: 0.995
+    max_steps: 2e6
+    summary_freq: 3000
+    num_layers: 3
+    hidden_units: 512
+
 ReacherBrain:
     normalize: true
     num_epoch: 3
@@ -270,15 +282,17 @@ StudentRecurrentBrain:
     buffer_size: 128
 
 AVCBrain:
+    use_recurrent: false
+    sequence_length: 32
+    memory_size: 256
     use_curiosity: true
     curiosity_strength: 0.01
     curiosity_enc_size: 256
-    time_horizon: 128
+    time_horizon: 512
     batch_size: 64
     buffer_size: 2024
     hidden_units: 256
-    num_layers: 2
-    beta: 1.0e-2
-    max_steps: 5.0e5
+    num_layers: 4
+    max_steps: 2.0e6
     num_epoch: 3
 

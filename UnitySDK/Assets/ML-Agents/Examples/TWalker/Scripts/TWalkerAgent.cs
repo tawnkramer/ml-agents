@@ -7,6 +7,7 @@ public class TWalkerAgent : Agent
 {
     [Header("Specific to Walker")] [Header("Target To Walk Towards")] [Space(10)]
     public Transform target;
+    public bool UseAllObservations = true;
 
     Vector3 dirToTarget;
 
@@ -14,11 +15,13 @@ public class TWalkerAgent : Agent
     public Transform[] x_y_z_rot_joints; //subset which rotate in x, y, and z
     public Transform[] x_y_rot_joints; //subset which rotate in x and y
     public Transform[] x_rot_joints; //subset which rotate in x only
+    public Transform[] y_rot_joints; //subset which rotate in x only
 
     JointDriveController jdController;
     bool isNewDecisionStep;
     int currentDecisionStep;
     Transform hips;
+    
 
     public override void InitializeAgent()
     {
@@ -41,17 +44,20 @@ public class TWalkerAgent : Agent
     {
         var rb = bp.rb;
         AddVectorObs(bp.groundContact.touchingGround ? 1 : 0); // Is this bp touching the ground
-        AddVectorObs(rb.position.y); // height above ground
-        AddVectorObs(rb.velocity);
-        AddVectorObs(rb.angularVelocity);
-        Vector3 localPosRelToHips = hips.InverseTransformPoint(rb.position);
-        AddVectorObs(localPosRelToHips);
+
+        if (UseAllObservations)
+        {
+            AddVectorObs(rb.position.y); // height above ground
+            AddVectorObs(rb.velocity);
+            AddVectorObs(rb.angularVelocity);
+            Vector3 localPosRelToHips = hips.InverseTransformPoint(rb.position);
+            AddVectorObs(localPosRelToHips);
+        }
        
         AddVectorObs(bp.currentXNormalizedRot);
         AddVectorObs(bp.currentYNormalizedRot);
         AddVectorObs(bp.currentZNormalizedRot);
         AddVectorObs(bp.currentStrength / jdController.maxJointForceLimit);
-       
     }
 
     /// <summary>
@@ -94,6 +100,11 @@ public class TWalkerAgent : Agent
                 bpDict[joint].SetJointTargetRotation(vectorAction[++i], 0, 0);
             }
 
+            foreach (Transform joint in y_rot_joints)
+            {
+                bpDict[joint].SetJointTargetRotation(0, vectorAction[++i], 0);
+            }
+
             foreach (Transform joint in x_y_z_rot_joints)
             {
                 bpDict[joint].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
@@ -113,15 +124,13 @@ public class TWalkerAgent : Agent
 
         IncrementDecisionTimer();
 
-        /* reward term trail 1
-         * This resulted in successful gait. Was very energetic galloping hop
+        // reward term trail 1
+        // This resulted in successful gait. Was very energetic galloping hop
           AddReward(
             +0.03f * Vector3.Dot(dirToTarget.normalized, jdController.bodyPartsDict[hips].rb.velocity)
             + 0.01f * Vector3.Dot(dirToTarget.normalized, hips.forward)
-            + 0.02f * (hips.position.y)
-            - 0.01f * jdController.bodyPartsDict[hips].rb.velocity.magnitude            
+            + 0.02f * (hips.position.y)            
         );
-         */
         
         /* reward term trail 2
          * This resulted in more uniform steps
@@ -135,6 +144,7 @@ public class TWalkerAgent : Agent
         );
          */ 
        
+        /*
 
         // Set reward for this step according to mixture of the following elements.
         // a. Velocity alignment with goal direction.
@@ -150,6 +160,7 @@ public class TWalkerAgent : Agent
             - 0.01f * jdController.bodyPartsDict[hips].rb.angularVelocity.magnitude
             - 0.01f * joint_strength_total
         );
+        */
     }
 
     /// <summary>
