@@ -7,7 +7,9 @@ public class TWalkerAgent : Agent
 {
     [Header("Specific to Walker")] [Header("Target To Walk Towards")] [Space(10)]
     public Transform target;
-    public bool UseAllObservations = true;
+    public bool ObservePositions = true;
+    public Transform LeftFoot;
+    public Transform RightFoot;
 
     Vector3 dirToTarget;
 
@@ -21,7 +23,8 @@ public class TWalkerAgent : Agent
     bool isNewDecisionStep;
     int currentDecisionStep;
     Transform hips;
-    
+
+
 
     public override void InitializeAgent()
     {
@@ -45,15 +48,16 @@ public class TWalkerAgent : Agent
         var rb = bp.rb;
         AddVectorObs(bp.groundContact.touchingGround ? 1 : 0); // Is this bp touching the ground
 
-        if (UseAllObservations)
+        if (ObservePositions)
         {
-            AddVectorObs(rb.position.y); // height above ground
-            AddVectorObs(rb.velocity);
-            AddVectorObs(rb.angularVelocity);
+            AddVectorObs(rb.position.y); // height above ground            
             Vector3 localPosRelToHips = hips.InverseTransformPoint(rb.position);
             AddVectorObs(localPosRelToHips);
         }
-       
+
+        AddVectorObs(rb.velocity);
+        AddVectorObs(rb.angularVelocity);
+
         AddVectorObs(bp.currentXNormalizedRot);
         AddVectorObs(bp.currentYNormalizedRot);
         AddVectorObs(bp.currentZNormalizedRot);
@@ -68,9 +72,14 @@ public class TWalkerAgent : Agent
         jdController.GetCurrentJointForces();
 
         AddVectorObs(dirToTarget.normalized);
-        AddVectorObs(jdController.bodyPartsDict[hips].rb.position);
         AddVectorObs(hips.forward);
         AddVectorObs(hips.up);
+
+        if (ObservePositions)
+        {
+            AddVectorObs(jdController.bodyPartsDict[hips].rb.position);
+        }
+
 
         foreach (var bodyPart in jdController.bodyPartsDict.Values)
         {
@@ -124,15 +133,27 @@ public class TWalkerAgent : Agent
 
         IncrementDecisionTimer();
 
-        // reward term trail 1
+        /*
+        // reward term trial 1
         // This resulted in successful gait. Was very energetic galloping hop
           AddReward(
-            +0.03f * Vector3.Dot(dirToTarget.normalized, jdController.bodyPartsDict[hips].rb.velocity)
+            + 0.03f * Vector3.Dot(dirToTarget.normalized, jdController.bodyPartsDict[hips].rb.velocity)
             + 0.01f * Vector3.Dot(dirToTarget.normalized, hips.forward)
             + 0.02f * (hips.position.y)            
         );
-        
-        /* reward term trail 2
+        */
+
+        // reward term
+        float distFeet = (LeftFoot.position - RightFoot.position).magnitude;
+        AddReward(
+          + 0.04f * Vector3.Dot(dirToTarget.normalized, jdController.bodyPartsDict[hips].rb.velocity)
+          + 0.01f * Vector3.Dot(dirToTarget.normalized, hips.forward)
+          //+ 0.01f * (hips.position.y)
+          //+ 0.01f * distFeet
+          );
+
+
+        /* reward term trial 2
          * This resulted in more uniform steps
           AddReward(
             +0.03f * Vector3.Dot(dirToTarget.normalized, jdController.bodyPartsDict[hips].rb.velocity)
@@ -142,8 +163,8 @@ public class TWalkerAgent : Agent
             - 0.01f * jdController.bodyPartsDict[hips].rb.angularVelocity.magnitude
             - 0.0001f * joint_strength_total
         );
-         */ 
-       
+         */
+
         /*
 
         // Set reward for this step according to mixture of the following elements.

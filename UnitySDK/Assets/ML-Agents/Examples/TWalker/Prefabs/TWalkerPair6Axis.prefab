@@ -780,7 +780,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1433636555945626}
   serializedVersion: 2
-  m_Mass: 2
+  m_Mass: 4
   m_Drag: 0.02
   m_AngularDrag: 0
   m_UseGravity: 1
@@ -949,7 +949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b29724baddfa457da6eeab446fa49ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxJointSpring: 50
+  maxJointSpring: 100
   jointDampen: 10
   maxJointForceLimit: 10000
   bodyPartsList: []
@@ -1020,7 +1020,9 @@ MonoBehaviour:
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
   target: {fileID: 4189406441879012}
-  UseAllObservations: 0
+  ObservePositions: 1
+  LeftFoot: {fileID: 4722201557991072}
+  RightFoot: {fileID: 4647004305842406}
   joints:
   - {fileID: 4516159909062260}
   - {fileID: 4349738307560184}
